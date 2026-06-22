@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="printable-report">
+    <h2>Training Program Reference</h2>
+
+    <form method="POST">
+        {% csrf_token %}
+
+        <p><strong>Intern Name:</strong> {{ student.name }}</p>
+        <p><strong>Intern Student ID:</strong> <input type="text" name="student_id"></p>
+
+        <p><strong>Start Date:</strong> <input type="date" name="start_date"></p>
+        <p><strong>End Date:</strong> <input type="date" name="end_date"></p>
+
+        <fieldset>
+            <legend>Supervisor Details</legend>
+            <label>Name:</label> <input type="text" name="sup_name"><br>
+            <label>Position:</label> <input type="text" name="sup_position"><br>
+            <label>Contact Number:</label> <input type="text" name="sup_contact"><br>
+            <label>Email:</label> <input type="email" name="sup_email">
+        </fieldset>
+
+        <fieldset>
+            <legend>Work Plan</legend>
+            <label>Week 1:</label> <input type="text" name="week_1"><br>
+            <label>Week 2:</label> <input type="text" name="week_2"><br>
+            <label>Week 3:</label> <input type="text" name="week_3"><br>
+            <label>Week 4:</label> <input type="text" name="week_4"><br>
+            <label>Week 5:</label> <input type="text" name="week_5"><br>
+            <label>Week 6:</label> <input type="text" name="week_6"><br>
+            <label>Week 7:</label> <input type="text" name="week_7"><br>
+            <label>Week 8:</label> <input type="text" name="week_8"><br>
+        </fieldset>
+
+        <fieldset>
+            <legend>HR Details</legend>
+            <label>HR Name:</label> <input type="text" name="hr_name"><br>
+            <label>Contact Number:</label> <input type="text" name="hr_contact"><br>
+            <label>Email:</label> <input type="email" name="hr_email">
+        </fieldset>
+
+        <button type="submit" class="no-print">Save Progress</button>
+        <button type="button" class="no-print" onclick="window.print()">Print Official Report</button>
+    </form>
+</div>
+{% endblock %}

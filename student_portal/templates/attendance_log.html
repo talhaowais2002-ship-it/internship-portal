@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Attendance Ledger</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .calendar-day { height: 80px; position: relative; font-weight: bold; vertical-align: top; width: 14.28%; }
+        /* Added td. and !important to guarantee colors override Bootstrap's table styles */
+        td.bg-verified { background-color: #d1e7dd !important; color: #0f5132 !important; }  
+        td.bg-pending { background-color: #fff3cd !important; color: #664d03 !important; }   
+        td.bg-active { background-color: #cff4fc !important; color: #055160 !important; }    
+        td.bg-empty { background-color: #f8f9fa !important; color: #6c757d !important; }
+        .calendar-hours { position: absolute; bottom: 5px; right: 5px; font-size: 0.75rem; font-weight: normal; }
+    </style>
+</head>
+<body class="bg-light">
+<div class="container py-5">
+    
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Attendance Ledger</h2>
+        <div class="d-flex align-items-center">
+            <span class="badge bg-secondary p-2 me-2">Intern: {{ request.user.username }}</span>
+            <form action="{% url 'logout' %}" method="post" class="d-inline">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-sm btn-outline-danger py-1">Logout</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="card mb-4 border-0 shadow-sm text-center bg-white py-4">
+        <div class="card-body">
+            <h5 class="text-muted mb-3">Shift Time Tracker</h5>
+            <form method="post">
+                {% csrf_token %}
+                {% if is_clocked_in %}
+                    <p class="text-info fw-bold mb-3 font-monospace">⚡ You are currently on the clock! Always click out before leaving.</p>
+                    <button type="submit" name="action" value="clock_out" class="btn btn-danger btn-lg px-5 shadow-sm fw-bold">🔴 Clock Out Now</button>
+                {% else %}
+                    <p class="text-muted mb-3">Ready to begin your work day?</p>
+                    <button type="submit" name="action" value="clock_in" class="btn btn-success btn-lg px-5 shadow-sm fw-bold">🟢 Clock In Now</button>
+                {% endif %}
+            </form>
+        </div>
+    </div>
+
+    <div class="card mb-4 shadow-sm">
+        <div class="card-body">
+            <h5 class="card-title text-muted mb-3">Required Target Tracker</h5>
+            <div class="row align-items-center">
+                <div class="col-md-4">
+                    <h3 class="mb-0 text-primary">{{ total_hours_earned|floatformat:2 }} / {{ required_hours|floatformat:0 }} Hours</h3>
+                    <small class="text-muted">Total Hours Verified by Coordinator</small>
+                </div>
+                <div class="col-md-8">
+                    <div class="progress" style="height: 30px; background-color: #e9ecef;">
+                        <div id="dynamic-intern-progress" 
+                        class="progress-bar progress-bar-striped progress-bar-animated bg-success" 
+                        role="progressbar" 
+                        style="width: {{ progress_percentage }}%;"
+                        aria-valuenow="{{ progress_percentage }}" 
+                        aria-valuemin="0" 
+                        aria-valuemax="100">
+                            {% if progress_percentage > 0 %}
+                                {{ progress_percentage }}% Complete
+                            {% else %}
+                                <span class="text-dark ms-2 fw-bold">0% Complete</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-7 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-header bg-white border-bottom py-3 text-center">
+                    <h4 class="mb-0 text-dark font-monospace">Schedule View</h4>
+                </div>
+                <div class="card-body p-0">
+                    <table class="table table-bordered mb-0 text-center">
+                        <thead>
+                            <tr class="table-dark">
+                                <th>Sun</th><th>Mon</th><th>Tue</th><th>Wed</th><th>Thu</th><th>Fri</th><th>Sat</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for week in calendar_grid %}
+                                <tr>
+                                    {% for day in week %}
+                                        <td class="calendar-day {% if day.day == 0 %}bg-empty{% elif day.status == 'verified' %}bg-verified{% elif day.status == 'pending' %}bg-pending{% elif day.status == 'active' %}bg-active{% endif %}">
+                                            <span>{% if day.day != 0 %}{{ day.day }}{% endif %}</span>
+                                            
+                                            {% if day.record %}
+                                                <div class="calendar-hours">
+                                                    <strong>{{ day.record.hours_worked|floatformat:2 }}h</strong>
+                                                </div>
+                                            {% endif %}
+                                        </td>
+                                    {% endfor %}
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <div class="card-footer bg-white d-flex justify-content-around text-muted py-2" style="font-size: 0.85rem;">
+                    <div><span class="badge bg-success">&nbsp;</span> Approved Shift</div>
+                    <div><span class="badge bg-warning">&nbsp;</span> Awaiting Review</div>
+                    <div><span class="badge bg-info">&nbsp;</span> Clocked In Now</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-5">
+            <div class="card shadow-sm">
+                <div class="card-header bg-white py-3">
+                    <h5 class="mb-0">Recent Activity Log</h5>
+                </div>
+                <div class="list-group list-group-flush" style="max-height: 400px; overflow-y: auto;">
+                    {% for rec in my_shifts %}
+                        <div class="list-group-item">
+                            <div class="d-flex w-100 justify-content-between">
+                                <h6 class="mb-1">{{ rec.date }}</h6>
+                                <small class="fw-bold {% if rec.is_verified %}text-success{% else %}text-warning{% endif %}">
+                                    {% if rec.is_verified %}Verified{% else %}Pending{% endif %}
+                                </small>
+                            </div>
+                            <small class="text-muted">
+                                Time: {{ rec.check_in|default:"--" }} to {{ rec.check_out|default:"--" }} <br>
+                                Shift Earned: <strong>{{ rec.hours_worked|default:"0.00"|floatformat:2 }} hrs</strong>
+                            </small>
+                        </div>
+                    {% empty %}
+                        <div class="p-4 text-center text-muted">No shifts logged this month.</div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+</body>
+</html>

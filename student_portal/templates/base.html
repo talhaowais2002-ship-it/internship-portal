@@ -1,0 +1,79 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enterprise Jobs Portal</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+
+    <header>
+        <h1>Jobs Portal — Enterprise Dashboard</h1>
+    </header>
+
+    <div class="main-layout">
+        
+        <aside class="admin-sidebar">
+            {% if user_role == 'student' %}
+            <h3>Student Workspace</h3>
+            <ul>
+                <li><a href="/">📊 Dashboard</a></li>
+                <li><a href="/seeker/resume/">📄 Online CV Builder</a></li>
+                <li><a href="/attendance/log/">⏰ Attendance Ledger</a></li>
+                <li><a href="/report/">📝 Submit Reports</a></li>
+            </ul>
+            {% else %}
+            <h3>Master Admin</h3>
+            <ul>
+                <li><a href="/admin/dashboard/">⚙️ Site Settings & CMS</a></li>
+                <li><a href="/admin/trainings/">💡 Manage Trainings & Types</a></li>
+                <li><a href="/portal/universities/">🎓 Manage Universities</a></li>
+                <li><a href="/admin/resumes/">📄 Expert/Intern Resumes</a></li>
+                <li><a href="/attendance/log/">⏰ Attendance Ledger</a></li>
+                <li><a href="/supervisor/evaluate-reports/">📥 Evaluate Reports</a></li>
+            </ul>
+            {% endif %}
+        </aside>
+
+        <main class="content">
+            {% block content %}
+            {% endblock %}
+        </main>
+
+    </div>
+
+    <footer class="no-print">
+        <div class="footer-container">
+            
+            <div class="footer-logo-column">
+                <div class="footer-logo-placeholder">
+                    <span class="logo-icon">🏢</span> 
+                    <span class="logo-text">COMPANY<span class="gold-text">LOGO</span></span>
+                </div>
+                <p class="logo-subtext">Enterprise Internship Systems</p>
+            </div>
+
+            <div class="footer-content-columns">
+                <div class="footer-section">
+                    <h4>Contact Support</h4>
+                    <p>📍 Headquarters Corporate Complex</p>
+                    <p>📧 internal.relations@company.local</p>
+                    <p>📞 +973 1700 0000</p>
+                </div>
+                <div class="footer-section">
+                    <h4>System Attributes</h4>
+                    <p>Tracks: Full-Time | Part-Time | Remote</p>
+                    <p>Education: Diploma | Bachelor | Master</p>
+                </div>
+            </div>
+
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 JOBS PORTAL. All rights reserved.</p>
+        </div>
+    </footer>
+
+</body>
+</html>

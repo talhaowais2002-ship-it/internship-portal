@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row justify-content-center my-5">
+    <div class="col-md-5">
+        <div class="card shadow border-0">
+            <div class="card-header bg-dark text-white text-center py-3">
+                <h4 class="mb-0 font-monospace">Secure Portal Sign In</h4>
+            </div>
+            <div class="card-body p-4 bg-white text-dark">
+                
+                {% if form.errors %}
+                    <div class="alert alert-danger small">
+                        Your username and password didn't match. Please try again.
+                    </div>
+                {% endif %}
+
+                <form method="post">
+                    {% csrf_token %}
+                    
+                    <div class="mb-3">
+                        <label for="id_username" class="form-label fw-bold small text-muted">Username / Student ID</label>
+                        <input type="text" name="username" id="id_username" class="form-control" placeholder="Enter your username" required>
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="id_password" class="form-label fw-bold small text-muted">Password</label>
+                        <input type="password" name="password" id="id_password" class="form-control" placeholder="••••••••" required>
+                    </div>
+
+                    <div class="d-grid mt-4">
+                        <button type="submit" class="btn btn-primary btn-lg fw-bold shadow-sm">Authorize & Enter &rarr;</button>
+                    </div>
+                </form>
+
+            </div>
+            <div class="card-footer bg-light text-center py-3">
+                <a href="{% url 'home' %}" class="text-decoration-none small text-secondary">&larr; Return to Track Selection</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

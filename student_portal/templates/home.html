@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="card mb-5 border-0 bg-light shadow-sm">
+    <div class="card-body p-4 d-flex justify-content-between align-items-center flex-wrap">
+        <div>
+            <h4 class="mb-1 text-dark font-monospace fw-bold">Global Vision Solutions Portal</h4>
+            <p class="text-muted mb-0 small">Active interns and coordinators can log in to track or verify training hours.</p>
+        </div>
+        <div class="mt-2 mt-md-0">
+            <a href="/accounts/login/" class="btn btn-primary px-4 fw-bold">Sign In to Portal &rarr;</a>
+        </div>
+    </div>
+</div>
+
+<h2>Select an Internship Track</h2>
+
+<div class="grid-container">
+    <div class="grid-card">
+        <div>
+            <h3>Information Technology</h3>
+            <p>Explore software development, data frameworks, and cloud engineering tracks.</p>
+        </div>
+        <div class="card-footer">
+            <a href="/it-roles/">View Roles →</a>
+        </div>
+    </div>
+
+    <div class="grid-card">
+        <div>
+            <h3>Business & Finance</h3>
+            <p>Explore technical project management, operations, and analytical strategy tracks.</p>
+        </div>
+        <div class="card-footer">
+            <a href="#">View Roles →</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

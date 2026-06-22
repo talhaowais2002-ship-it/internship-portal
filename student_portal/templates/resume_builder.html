@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Online CV & Resume Builder</h2>
+<p style="color: #64748b; margin-bottom: 20px;">Construct, view, and maintain your active deployment profile.</p>
+
+<div class="grid-container" style="margin-bottom: 30px;">
+    <div class="grid-card" style="min-height: auto; padding: 15px;">
+        <h3>Live CV Status: 
+            {% if resume %}
+                <span style="color: #22c55e;">🟢 Active & Visible</span>
+            {% else %}
+                <span style="color: #ef4444;">⚪ No Active Profile</span>
+            {% endif %}
+        </h3>
+        
+        {% if resume %}
+        <div class="card-footer" style="border: none; padding: 10px 0 0 0; display: flex; gap: 20px;">
+            <a href="javascript:window.print()" style="color: #1e3a8a; font-weight: 600; text-decoration: none;">📥 Download / Print Profile</a>
+            
+            <form method="POST" style="display:inline; padding:0; box-shadow:none; border:none; margin:0;">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="delete">
+                <button type="submit" style="background:none; border:none; color:#ef4444; padding:0; cursor:pointer; font-weight:600; font-size:0.95rem;">🗑️ Delete Resume</button>
+            </form>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<form method="POST" style="background: white; padding: 30px; border-radius: 12px; border: 1px solid #e2e8f0; box-shadow: 0 4px 12px rgba(0,0,0,0.01);">
+    {% csrf_token %}
+    <fieldset style="border: none; padding: 0; margin: 0;">
+        <legend style="font-size: 1.2rem; color: #1e3a8a; font-weight: 700; margin-bottom: 20px; border-bottom: 2px solid #eab308; padding-bottom: 5px; width: 100%;">
+            Core Professional Credentials
+        </legend>
+        
+        <label style="font-weight: 600; display: block; margin-bottom: 8px; color: #334155;">Academic Major / Track Specialization:</label>
+        <input type="text" name="specialization" value="{{ resume.specialization|default:'' }}" placeholder="e.g. Software Engineering" required style="width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 6px; margin-bottom: 20px;">
+        
+        <label style="font-weight: 600; display: block; margin-bottom: 8px; color: #334155;">Core Technical Skillsets:</label>
+        <textarea name="skills" placeholder="e.g. Python, Django, PostgreSQL, Git" required style="width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 6px; margin-bottom: 20px; height: 80px;">{{ resume.skills|default:'' }}</textarea>
+        
+        <label style="font-weight: 600; display: block; margin-bottom: 8px; color: #334155;">Academic Objective Summary:</label>
+        <textarea name="objective" placeholder="Brief professional statement introducing your background..." required style="width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 6px; margin-bottom: 25px; height: 120px;">{{ resume.objective|default:'' }}</textarea>
+    </fieldset>
+
+    <button type="submit" style="background-color: #1e3a8a; color: white; padding: 12px 24px; border: none; border-radius: 6px; font-weight: 600; cursor: pointer;">
+        Save & Update Profile
+    </button>
+</form>
+{% endblock %}

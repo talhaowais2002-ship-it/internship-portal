@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Apply for Python Internship</h2>
+
+<form method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+
+    <label>Full Name:</label>
+    <input type="text" name="student_name" required>
+
+    <label>University Full Name:</label>
+    <input type="text" name="uni_name" required>
+
+    <label>Learning Goals:</label>
+    <textarea name="learning_goals" required></textarea>
+
+    <label>Upload CPR:</label>
+    <input type="file" name="cpr_file" required>
+
+    <label>Upload CV:</label>
+    <input type="file" name="cv_file" required>
+
+    <label>Upload Passport Copy:</label>
+    <input type="file" name="passport_file" required>
+
+    <label>Upload Transcript/Script:</label>
+    <input type="file" name="script_file" required>
+
+    <label>Upload University Letter:</label>
+    <input type="file" name="uni_letter" required>
+
+    <button type="submit">Submit Application</button>
+</form>
+{% endblock %}
