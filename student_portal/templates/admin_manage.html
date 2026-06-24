@@ -22,7 +22,24 @@
             </form>
         </div>
     </div>
-
+    <div class="row mb-5">
+    <h4 class="mb-3 text-secondary">Active Internship Tracks</h4>
+    {% for track in tracks %}
+    <div class="col-md-4">
+        <div class="card shadow-sm border-0 h-100">
+            <div class="card-body">
+                <h5 class="card-title text-primary">{{ track.title }}</h5>
+                <p class="card-text text-muted">{{ track.description|default:"No description provided." }}</p>
+                <a href="#" class="btn btn-outline-primary btn-sm">View Roles &rarr;</a>
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <div class="col-12">
+        <p class="text-muted">No active training tracks found.</p>
+    </div>
+    {% endfor %}
+</div>
     {% if messages %}
         {% for message in messages %}
             <div class="alert alert-{{ message.tags }} alert-dismissible fade show shadow-sm" role="alert">

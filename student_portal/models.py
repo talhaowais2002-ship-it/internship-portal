@@ -55,7 +55,8 @@ class University(models.Model):
     coordinator_name = models.CharField(max_length=150)
     contact_email = models.EmailField()
     date_affiliated = models.DateField(auto_now_add=True)
-
+    class Meta:
+        verbose_name_plural = "Universities"
     def __str__(self):
         return self.name
 
@@ -73,3 +74,11 @@ class TrainingTrack(models.Model):
 
     def __str__(self):
         return f"{self.title} ({self.get_department_display()})"
+class TrainingTrack(models.Model):
+    title = models.CharField(max_length=100, unique=True)
+    description = models.TextField(blank=True, null=True)
+    is_active = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.title

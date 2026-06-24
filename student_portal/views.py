@@ -276,7 +276,10 @@ def admin_manage_view(request):
                 messages.error(request, 'Attendance record not found!')
             return redirect('admin_manage')
     pending_shifts = AttendanceRecord.objects.filter(is_verified=False, check_out__isnull=False).order_by('date')
+    training_tracks = TrainingTrack.objects.filter(is_active=True) 
+
     context = {
         "pending_shifts": pending_shifts,
+        "tracks": training_tracks, 
     }
     return render(request, 'admin_manage.html', context)
