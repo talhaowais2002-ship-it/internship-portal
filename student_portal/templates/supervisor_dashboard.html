@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+
+{% block content %}
+<style>
+    .dashboard-wrapper {
+        padding: 30px;
+        font-family: Arial, sans-serif;
+    }
+    .intern-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 15px;
+        background-color: white;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+    .intern-table th, .intern-table td {
+        border: 1px solid #e0e0e0;
+        padding: 12px 15px;
+        text-align: left;
+    }
+    .intern-table th {
+        background-color: #0b2559; /* Matches your header dark blue */
+        color: white;
+        font-weight: bold;
+    }
+    .action-btn {
+        padding: 6px 12px;
+        margin-right: 5px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        color: white;
+        font-size: 14px;
+    }
+    .btn-view { background-color: #17a2b8; }
+    .btn-eval { background-color: #28a745; }
+</style>
+
+<div class="dashboard-wrapper">
+    <h2>Supervisor Dashboard</h2>
+    
+    {% if company %}
+        <h4 style="color: #666; margin-top: 10px;">{{ company }} - Intern Roster</h4>
+        <hr style="border: 1px solid #ddd; margin-bottom: 20px;">
+        
+        <table class="intern-table">
+            <thead>
+                <tr>
+                    <th>Student Name</th>
+                    <th>University</th>
+                    <th>Training Track</th>
+                    <th>Hours Required</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for intern in interns %}
+                <tr>
+                    <td><strong>{{ intern.user.username }}</strong></td>
+                    <td>{{ intern.university.name|default:"Unassigned" }}</td>
+                    <td>{{ intern.assigned_track.title|default:"Unassigned" }}</td>
+                    <td>{{ intern.required_hours }}</td>
+                    <td>
+                        <a href="{% url 'supervisor_student_attendance' intern.id %}" class="action-btn btn-view" style="text-decoration: none; display: inline-block;">View Attendance</a>
+                        <button class="action-btn btn-eval">Evaluate</button>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5" style="text-align: center; padding: 20px;">You have no interns assigned to your company right now.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        
+    {% else %}
+        <div style="background-color: #fff3cd; color: #856404; padding: 15px; border-radius: 4px; border: 1px solid #ffeeba;">
+            You are not assigned to a company yet. Please contact the University Admin.
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

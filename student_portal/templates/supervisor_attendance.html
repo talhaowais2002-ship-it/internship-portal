@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% block content %}
+<style>
+    .attendance-wrapper { padding: 30px; font-family: Arial, sans-serif; }
+    .back-link { color: #0b2559; text-decoration: none; font-weight: bold; display: inline-block; margin-bottom: 20px; }
+    .back-link:hover { text-decoration: underline; }
+    .log-table { width: 100%; border-collapse: collapse; margin-top: 15px; background-color: white; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+    .log-table th, .log-table td { border: 1px solid #e0e0e0; padding: 12px 15px; text-align: left; }
+    .log-table th { background-color: #0b2559; color: white; font-weight: bold; }
+    .status-badge { padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: bold; color: white; }
+    .status-approved { background-color: #28a745; }
+    .status-pending { background-color: #ffc107; color: #333; }
+</style>
+
+<div class="attendance-wrapper">
+    <a href="{% url 'supervisor_dashboard' %}" class="back-link">← Back to Dashboard</a>
+    
+    <h2>Attendance Logs for {{ student.user.username }}</h2>
+    <h4 style="color: #666;">Track: {{ student.assigned_track.title|default:"General" }}</h4>
+    <hr style="border: 1px solid #ddd; margin-bottom: 20px;">
+
+    <table class="log-table">
+        <thead>
+            <tr>
+                <th>Date of Shift</th>
+                <th>Clock In</th>
+                <th>Clock Out</th>
+                <th>Calculated Hours</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for log in logs %}
+            <tr>
+                <td>{{ log.date }}</td>
+                <td>{{ log.clock_in }}</td>
+                <td>{{ log.clock_out }}</td>
+                <td>{{ log.calculated_hours }}</td>
+                <td>
+                    {% if log.is_approved %}
+                        <span class="status-badge status-approved">Approved</span>
+                    {% else %}
+                        <span class="status-badge status-pending">Pending Approval</span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="5" style="text-align: center; padding: 20px;">No attendance records found for this student.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
